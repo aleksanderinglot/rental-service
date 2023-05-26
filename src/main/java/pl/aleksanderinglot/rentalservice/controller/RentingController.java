@@ -16,21 +16,26 @@ public class RentingController {
 
     @GetMapping
     public Set<ReservationDTO> getReservationsByParam(@RequestParam(required = false) Long lessorId, @RequestParam(required = false) Long placeForRentId) throws Exception {
-        return null;
+        if (lessorId != null)
+            return rentingService.getReservationsByLessorId(lessorId);
+        else if (placeForRentId != null)
+            return rentingService.getReservationsByPlaceForRentId(placeForRentId);
+        else
+            throw new Exception("Provided parameter is not correct");
     }
 
     @PostMapping
     public ReservationDTO addReservation(@RequestBody ReservationDTO reservationDTO) {
-        return null;
+        return rentingService.addReservation(reservationDTO);
     }
 
     @PutMapping
     public ReservationDTO updateReservation(@RequestBody ReservationDTO reservationDTO) {
-        return null;
+        return rentingService.updateReservation(reservationDTO);
     }
 
     @DeleteMapping
     public void deleteReservationById(@RequestParam Long reservationId) {
-
+        rentingService.deleteReservationById(reservationId);
     }
 }
