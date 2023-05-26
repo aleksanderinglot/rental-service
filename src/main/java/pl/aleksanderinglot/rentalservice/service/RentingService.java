@@ -7,10 +7,7 @@ import pl.aleksanderinglot.rentalservice.entity.Lessee;
 import pl.aleksanderinglot.rentalservice.entity.Lessor;
 import pl.aleksanderinglot.rentalservice.entity.PlaceForRent;
 import pl.aleksanderinglot.rentalservice.entity.Reservation;
-import pl.aleksanderinglot.rentalservice.exceptions.LesseeNotFoundException;
-import pl.aleksanderinglot.rentalservice.exceptions.LessorNotFoundException;
-import pl.aleksanderinglot.rentalservice.exceptions.PlaceForRentNotFoundException;
-import pl.aleksanderinglot.rentalservice.exceptions.ReservationAlreadyExistsException;
+import pl.aleksanderinglot.rentalservice.exceptions.*;
 import pl.aleksanderinglot.rentalservice.repository.LesseeRepository;
 import pl.aleksanderinglot.rentalservice.repository.LessorRepository;
 import pl.aleksanderinglot.rentalservice.repository.PlaceForRentRepository;
@@ -77,8 +74,20 @@ public class RentingService {
         return convertReservationEntityToDTO(save);
     }
 
-    public ReservationDTO updateReservation(ReservationDTO reservation) {
-        return null;
+    public ReservationDTO updateReservation(ReservationDTO reservationDTO) {
+        Optional<Reservation> existingReservation = reservationRepository.findById(reservationDTO.getId());
+
+        if (existingReservation.isEmpty())
+            throw new ReservationNotFoundException("Reservation id not found - " + reservationDTO.getId());
+
+        Set<Reservation> existingReservations = reservationRepository.findExistingReservation(reservationDTO.getStartDate(), reservationDTO.getEndDate(), reservationDTO.getPlaceForRentId());
+
+        if (existingReservations.size() > 1)
+            throw new ReservationAlreadyExistsException("This place is already booked in given period - please select another date");
+
+        Reservation save = reservationRepository.save(convertReservationDTOtoEntity(reservationDTO));
+
+        return convertReservationEntityToDTO(save);
     }
 
     public void deleteReservationById(Long reservationId) {
