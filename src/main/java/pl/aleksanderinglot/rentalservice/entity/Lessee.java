@@ -1,11 +1,20 @@
 package pl.aleksanderinglot.rentalservice.entity;
 
+import jakarta.persistence.*;
+
 import java.util.Set;
 
+@Entity
+@Table(name = "lessees")
 public class Lessee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
     private String lastName;
+
+    @OneToMany(mappedBy = "lessee", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Reservation> reservations;
 
     public Lessee() {

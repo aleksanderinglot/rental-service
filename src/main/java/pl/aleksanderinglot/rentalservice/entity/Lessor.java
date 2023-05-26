@@ -1,11 +1,21 @@
 package pl.aleksanderinglot.rentalservice.entity;
 
+import jakarta.persistence.*;
+
 import java.util.Set;
 
+@Entity
+@Table(name = "lessors")
 public class Lessor {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
     private String lastName;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "place_for_rent_id")
     private Set<PlaceForRent> placesForRent;
 
     public Lessor() {
