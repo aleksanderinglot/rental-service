@@ -91,7 +91,12 @@ public class RentingService {
     }
 
     public void deleteReservationById(Long reservationId) {
+        Optional<Reservation> reservationToDelete = reservationRepository.findById(reservationId);
 
+        if (reservationToDelete.isEmpty())
+            throw new ReservationNotFoundException("Reservation id not found - " + reservationId);
+
+        reservationRepository.deleteById(reservationId);
     }
 
     private Reservation convertReservationDTOtoEntity(ReservationDTO reservationDTO) {
