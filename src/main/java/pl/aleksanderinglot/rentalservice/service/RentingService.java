@@ -10,6 +10,7 @@ import pl.aleksanderinglot.rentalservice.entity.Reservation;
 import pl.aleksanderinglot.rentalservice.exceptions.LesseeNotFoundException;
 import pl.aleksanderinglot.rentalservice.exceptions.LessorNotFoundException;
 import pl.aleksanderinglot.rentalservice.exceptions.PlaceForRentNotFoundException;
+import pl.aleksanderinglot.rentalservice.exceptions.ReservationAlreadyExistsException;
 import pl.aleksanderinglot.rentalservice.repository.LesseeRepository;
 import pl.aleksanderinglot.rentalservice.repository.LessorRepository;
 import pl.aleksanderinglot.rentalservice.repository.PlaceForRentRepository;
@@ -66,7 +67,14 @@ public class RentingService {
     }
 
     public ReservationDTO addReservation(ReservationDTO reservationDTO) {
-        return null;
+        Set<Reservation> existingReservations = reservationRepository.findExistingReservation(reservationDTO.getStartDate(), reservationDTO.getEndDate(), reservationDTO.getPlaceForRentId());
+
+        if (!existingReservations.isEmpty())
+            throw new ReservationAlreadyExistsException("This place is already booked in given period - please select another date");
+
+        Reservation save = reservationRepository.save(convertReservationDTOtoEntity(reservationDTO));
+
+        return convertReservationEntityToDTO(save);
     }
 
     public ReservationDTO updateReservation(ReservationDTO reservation) {
