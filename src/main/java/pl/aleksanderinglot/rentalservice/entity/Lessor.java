@@ -18,6 +18,9 @@ public class Lessor {
     @JoinColumn(name = "place_for_rent_id")
     private Set<PlaceForRent> placesForRent;
 
+    @OneToMany(mappedBy = "lessor", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    public Set<Reservation> reservations;
+
     public Lessor() {
     }
 
@@ -59,4 +62,8 @@ public class Lessor {
     public void setPlacesForRent(Set<PlaceForRent> placesForRent) {
         this.placesForRent = placesForRent;
     }
+
+    public Set<Reservation> getReservations() { return reservations; }
+
+    public void setReservations(Set<Reservation> reservations) { this.reservations = reservations; }
 }

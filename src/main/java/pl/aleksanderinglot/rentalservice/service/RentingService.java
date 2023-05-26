@@ -16,6 +16,7 @@ import pl.aleksanderinglot.rentalservice.repository.PlaceForRentRepository;
 import pl.aleksanderinglot.rentalservice.repository.ReservationRepository;
 
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -35,11 +36,33 @@ public class RentingService {
     private ReservationRepository reservationRepository;
 
     public Set<ReservationDTO> getReservationsByLessorId(Long lessorId) {
-        return null;
+        Optional<Lessor> foundLessor = lessorRepository.findById(lessorId);
+        Set<ReservationDTO> reservationDTOS = new HashSet<>();
+
+        if (foundLessor.isEmpty())
+            throw new LessorNotFoundException("Lessor id not found - " + lessorId);
+
+        foundLessor.get().getReservations().forEach(reservation -> {
+            ReservationDTO reservationDTO = convertReservationEntityToDTO(reservation);
+            reservationDTOS.add(reservationDTO);
+        });
+
+        return reservationDTOS;
     }
 
     public Set<ReservationDTO> getReservationsByPlaceForRentId(Long placeForRentId) {
-        return null;
+        Optional<PlaceForRent> foundPlaceForRent = placeForRentRepository.findById(placeForRentId);
+        Set<ReservationDTO> reservationDTOS = new HashSet<>();
+
+        if (foundPlaceForRent.isEmpty())
+            throw new PlaceForRentNotFoundException("Place for rent id not found - " + placeForRentId);
+
+        foundPlaceForRent.get().getReservations().forEach(reservation -> {
+            ReservationDTO reservationDTO = convertReservationEntityToDTO(reservation);
+            reservationDTOS.add(reservationDTO);
+        });
+
+        return reservationDTOS;
     }
 
     public ReservationDTO addReservation(ReservationDTO reservationDTO) {
