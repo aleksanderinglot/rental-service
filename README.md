@@ -7,6 +7,7 @@ This is a REST web service that cointaining methods which allow user to book sel
 ### Technologies used
 
 Java
+
 Spring boot
 
 Maven
